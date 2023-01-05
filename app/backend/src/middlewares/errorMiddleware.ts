@@ -8,11 +8,11 @@ class ErrorMiddleware {
     res: Response,
     _next: NextFunction,
   ) {
-    if (error instanceof Error) {
-      const { status, message } = error as HttpException;
-      return res.status(status || 500).send({ message });
-    }
-    return res.status(500).send('Erro não definido');
+    // if (error instanceof Error) {
+    const { status, message } = error as HttpException;
+    return res.status(status).send({ message });
+    // }
+    // return res.status(500).send('Erro não definido');
   }
 }
 
