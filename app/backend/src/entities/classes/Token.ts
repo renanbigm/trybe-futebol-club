@@ -1,11 +1,9 @@
 import * as jwt from 'jsonwebtoken';
 import HttpException from '../../utils/HttpExecption';
-// import ILogin from '../interfaces/ILogin';
-
-const secret = process.env.JWT_SECRET;
 
 class Token {
   static create(user: string): string {
+    const secret = process.env.JWT_SECRET;
     const jwtConfig: object = { expiresIn: '7d', algorithm: 'HS256' };
 
     return jwt.sign({ data: user }, secret as string, jwtConfig);

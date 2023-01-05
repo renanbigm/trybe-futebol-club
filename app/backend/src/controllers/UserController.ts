@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import Token from '../entities/classes/Token';
 import UserService from '../services/UserService';
-// import Email from '../entities/classes/Email';
-// import Password from '../entities/classes/Password';
 
 class UserController {
   static async login(req: Request, res: Response, next: NextFunction) {
@@ -12,9 +10,6 @@ class UserController {
       return res.status(400).json({ message: 'All fields must be filled' });
     }
 
-    // if (Email.verifyEmail(email) === false || Password.verifyPassword(password) === false) {
-    //   return res.status(401).json({ message: 'Incorrect email or password' });
-    // }
     try {
       const { status, message } = await UserService.login(email, password);
 

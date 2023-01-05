@@ -26,7 +26,6 @@ class UserService {
 
   static async getUser(email: string) {
     const user = await UserModel.findOne({ where: { email } });
-
     if (!user) {
       throw new HttpException(401, 'Incorrect email or password');
     }
