@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import Token from '../entities/classes/Token';
 import MatcheService from '../services/MatcheService';
-// import UserService from '../services/UserService';
 
 class MatcheController {
   static async getAll(req: Request, res: Response, next: NextFunction) {
@@ -39,6 +38,17 @@ class MatcheController {
     try {
       const { status, message } = await MatcheService.finishMatche(id);
       return res.status(status).json({ message });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async updateMatche(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      await MatcheService.updateMatche(id, req.body);
+      return res.status(200).json({ message: 'Matche update with success' });
     } catch (err) {
       next(err);
     }

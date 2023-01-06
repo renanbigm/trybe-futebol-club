@@ -3,6 +3,10 @@ import TeamModel from '../database/models/TeamModel';
 import MatcheModel from '../database/models/MatcheModel';
 import HttpException from '../utils/HttpExecption';
 
+type Goals = {
+  homeTeamGoals: number,
+  awayTeamGoals: number,
+};
 class MatcheService {
   static async getAll(): Promise<MatcheModel[]> {
     const allMatches = await MatcheModel.findAll({
@@ -61,6 +65,15 @@ class MatcheService {
     );
 
     return { status: 200, message: 'Finished' };
+  }
+
+  static async updateMatche(id: string, body: Goals) {
+    await MatcheModel.update(
+      { homeTeamGoals: body.homeTeamGoals,
+        awayTeamGoals: body.awayTeamGoals,
+      },
+      { where: { id } },
+    );
   }
 }
 
