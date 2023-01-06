@@ -24,7 +24,7 @@ describe('Tests in teams route, get', () => {
     res = await chai.request(app).get('/teams');
 
     expect(res).to.have.status(200);
-    expect(res.body).to.deep.equal(allTeams)
+    expect(res.body).to.deep.eq(allTeams)
   });
   it('retorna um único time pelo Id', async () => {
     sinon.stub(TeamModel, 'findByPk').resolves(allTeams[5] as TeamModel);
@@ -32,7 +32,7 @@ describe('Tests in teams route, get', () => {
     res = await chai.request(app).get('/teams/5');
 
     expect(res).to.have.status(200);
-    expect(res.body).to.deep.equal(allTeams[5])
+    expect(res.body).to.deep.eq(allTeams[5])
   });
   after(()=>{
     sinon.restore();
@@ -45,9 +45,9 @@ describe('Tests in teams route, get', () => {
     it('Se retorna erro passando um Id inválido', async () => {
       sinon.stub(TeamModel, 'findByPk').resolves(null);
     
-      res = await chai.request(app).get('/teams/18');
+      res = await chai.request(app).get('/teams/88');
 
-      expect(res).to.have.status(200);
-      expect(res.body).to.be.null;
+      expect(res).to.have.status(404);
+      expect(res.body.message).to.be.eq('There is no team with such id!');
     });
 });
