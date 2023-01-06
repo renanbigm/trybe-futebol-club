@@ -15,7 +15,7 @@ class TeamController {
     const { id } = req.params;
 
     try {
-      const team = await TeamService.getById(id);
+      const team = await TeamService.getById(Number(id));
       return res.status(200).json(team);
     } catch (err) {
       next(err);

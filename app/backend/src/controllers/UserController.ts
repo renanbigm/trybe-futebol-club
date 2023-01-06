@@ -27,7 +27,7 @@ class UserController {
     try {
       const { status, message } = await UserService.validate(token.data);
 
-      res.status(status).json({ role: message });
+      return res.status(status).json({ role: message });
     } catch (err) {
       next(err);
     }

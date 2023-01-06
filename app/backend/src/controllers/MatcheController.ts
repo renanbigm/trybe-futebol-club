@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
+import Token from '../entities/classes/Token';
 import MatcheService from '../services/MatcheService';
-// import Token from '../entities/classes/Token';
 // import UserService from '../services/UserService';
 
 class MatcheController {
@@ -19,15 +19,29 @@ class MatcheController {
     }
   }
 
-  static async saveMatche(req: Request, res: Response, _next: NextFunction) {
-    // const { authorization } = req.headers;
+  static async saveMatche(req: Request, res: Response, next: NextFunction) {
+    const { authorization } = req.headers;
     const matche = req.body;
 
-    // const token = Token.validate(authorization as string);
-    // const validateToken = await UserService.validate(token.data);
+    try {
+      Token.validate(authorization as string);
 
-    const result = await MatcheService.saveMatche(matche);
-    return res.status(201).json(result);
+      const result = await MatcheService.saveMatche(matche);
+      return res.status(201).json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async finishMatche(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      const { status, message } = await MatcheService.finishMatche(id);
+      return res.status(status).json({ message });
+    } catch (err) {
+      next(err);
+    }
   }
 }
 

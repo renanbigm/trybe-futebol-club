@@ -8,7 +8,7 @@ class TeamService {
     return teams;
   }
 
-  static async getById(id: string): Promise<TeamModel | null> {
+  static async getById(id: number): Promise<TeamModel | null> {
     const team = await TeamModel.findByPk(id);
     if (!team) {
       throw new HttpException(404, 'There is no team with such id!');
