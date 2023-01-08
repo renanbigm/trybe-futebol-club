@@ -1,4 +1,6 @@
-interface IFullMatche {
+import { Model } from 'sequelize';
+
+interface IFullMatche extends Model{
   id: number,
   homeTeam: number,
   homeTeamGoals: number,

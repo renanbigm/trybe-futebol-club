@@ -160,27 +160,6 @@ class Leaderboard {
 
 export default Leaderboard;
 
-// if (matche.homeTeamName === el.awayTeamName) {
-//   teamStatus.goalsFavor += el.awayTeamGoals;
-//   teamStatus.goalsOwn += el.homeTeamGoals;
-//   if (el.result === 'awayWins') teamStatus.totalWins += 1;
-//   else if (el.result === 'homeWins') teamStatus.totalLosses += 1;
-//   else teamStatus.totalDraws += 1;
-// }
-// });
-
-// { name: matche.awayTeamName,
-//   totalWins: 0,
-//   totalLosses: 0,
-//   goalsFavor: 0,
-//   goalsOwn: 0,
-//   totalDraws: 0,
-//   totalGames: teamMatches.length };
-
-// name: string,
-//     totalWins: number,
-//     totalDraws: number,
-//     totalLosses: number,
-//     goalsFavor: number,
-//     goalsOwn: number,
-//     totalGames: number,
+// fazer um reduce do array de todos os times e um filter em um array de todas as partidas,
+// juntando no filter todas as partidas q tem o nome do time no Curr e salvando no acc.
+// vai gerar um [][]. Depois fazer um map onde cada elemento é um array de todas as partidas do time
