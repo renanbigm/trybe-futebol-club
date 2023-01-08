@@ -1,4 +1,5 @@
 import { BOOLEAN, INTEGER, Model } from 'sequelize';
+// import IFullMatche from '../../entities/interfaces/IFullMatche';
 import db from '.';
 import TeamModel from './TeamModel';
 

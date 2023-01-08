@@ -2,6 +2,7 @@ import INewMatche from '../entities/interfaces/INewMatche';
 import TeamModel from '../database/models/TeamModel';
 import MatcheModel from '../database/models/MatcheModel';
 import HttpException from '../utils/HttpExecption';
+import IFullMatche from '../entities/interfaces/IFullMatche';
 
 type Goals = {
   homeTeamGoals: number,
@@ -19,7 +20,7 @@ class MatcheService {
     return allMatches;
   }
 
-  static async getFilteredMatches(filter: boolean): Promise<MatcheModel[]> {
+  static async getFilteredMatches(filter: boolean): Promise<MatcheModel[] | IFullMatche[]> {
     const filteredMatches = await MatcheModel.findAll({
       where: { inProgress: filter },
       include: [
