@@ -1,7 +1,4 @@
-// import TeamModel from '../../database/models/TeamModel';
-import MatcheModel from '../../database/models/MatcheModel';
 import MatcheService from '../../services/MatcheService';
-import ILeaderBoard from '../interfaces/ILeaderboard';
 import IFullMatche from '../interfaces/IFullMatche';
 import IResumeMatches from '../interfaces/IResumeMatches';
 import TeamService from '../../services/TeamService';
@@ -28,7 +25,7 @@ class Leaderboard {
     const resume = allMatches.map((el: IFullMatche) => Leaderboard.matchesResume(el));
 
     const getTeamsResume = resume.map((matche) =>
-      Leaderboard.handleHomeTeams(matche, resume, path));
+      Leaderboard.buildLeaderboard(matche, resume, path));
 
     const result = allTeams.map((el: any) =>
       getTeamsResume.find((target) => target.name === el.teamName));
@@ -43,13 +40,13 @@ class Leaderboard {
     if (path.includes('home')) {
       return Leaderboard.buildHome(resume, matche);
     }
-    const totalMatches = resume.filter((el: any) => matche.homeTeamName === el.homeTeamName
+    const teamMatches = resume.filter((el: any) => matche.homeTeamName === el.homeTeamName
       || matche.homeTeamName === el.awayTeamName);
 
-    return Leaderboard.buildAway(totalMatches, matche);
+    return Leaderboard.buildAll(matche, teamMatches);
   }
 
-  static handleHomeTeams(matche: any, resume: any, path: string) {
+  static buildLeaderboard(matche: any, resume: any, path: string) {
     const stats = Leaderboard.pathHandler(matche, resume, path);
 
     const totalPoints = (stats.totalWins * 3) + stats.totalDraws;
@@ -70,14 +67,11 @@ class Leaderboard {
 
   static buildHome(resume: any, matche: any) {
     const teamMatches = resume.filter((el: any) => matche.homeTeamName === el.homeTeamName);
-    const teamStatus = { name: matche.homeTeamName,
-      totalWins: 0,
-      totalLosses: 0,
-      goalsFavor: 0,
-      goalsOwn: 0,
-      totalDraws: 0,
-      totalGames: teamMatches.length };
+    const teamStatus = Leaderboard.handleStatus(teamMatches.length);
+
     teamMatches.forEach((el: any) => {
+      teamStatus.name = matche.homeTeamName;
+
       if (matche.homeTeamName === el.homeTeamName) {
         teamStatus.goalsFavor += el.homeTeamGoals;
         teamStatus.goalsOwn += el.awayTeamGoals;
@@ -112,14 +106,11 @@ class Leaderboard {
 
   static buildAway(resume: any, matche: any) {
     const teamMatches = resume.filter((el: any) => matche.awayTeamName === el.awayTeamName);
-    const teamStatus = { name: matche.awayTeamName,
-      totalWins: 0,
-      totalLosses: 0,
-      goalsFavor: 0,
-      goalsOwn: 0,
-      totalDraws: 0,
-      totalGames: teamMatches.length };
+    const teamStatus = Leaderboard.handleStatus(teamMatches.length);
+
     teamMatches.forEach((el: any) => {
+      teamStatus.name = matche.awayTeamName;
+
       if (matche.awayTeamName === el.awayTeamName) {
         teamStatus.goalsFavor += el.awayTeamGoals;
         teamStatus.goalsOwn += el.homeTeamGoals;
@@ -131,15 +122,10 @@ class Leaderboard {
     return teamStatus;
   }
 
-  static buildAll(totalMatches: any, matche: any) {
-    const teamStatus = { name: matche.homeTeamName,
-      totalWins: 0,
-      totalLosses: 0,
-      goalsFavor: 0,
-      goalsOwn: 0,
-      totalDraws: 0,
-      totalGames: totalMatches.length };
-    totalMatches.forEach((el: any) => {
+  static buildAll(matche: any, teamMatche: any) {
+    const teamStatus = Leaderboard.handleStatus(teamMatche.length);
+    teamMatche.forEach((el: any) => {
+      teamStatus.name = matche.homeTeamName;
       if (matche.homeTeamName === el.homeTeamName) {
         teamStatus.goalsFavor += el.homeTeamGoals;
         teamStatus.goalsOwn += el.awayTeamGoals;
@@ -149,11 +135,26 @@ class Leaderboard {
       } else if (matche.homeTeamName === el.awayTeamName) {
         teamStatus.goalsFavor += el.awayTeamGoals;
         teamStatus.goalsOwn += el.homeTeamGoals;
-        if (el.result === 'homeWins') teamStatus.totalWins += 1;
+        if (el.result === 'awayWins') teamStatus.totalWins += 1;
         else if (el.result === 'draw') teamStatus.totalDraws += 1;
         else teamStatus.totalLosses += 1;
       }
     });
+    return teamStatus;
+  }
+
+  static handleStatus(totalGames: number) {
+    const teamStatus = {
+      name: '',
+      totalWins: 0,
+      totalLosses: 0,
+      goalsFavor: 0,
+      goalsOwn: 0,
+      totalDraws: 0,
+      totalGames,
+    };
+
+    return teamStatus;
   }
 }
 
@@ -167,3 +168,19 @@ export default Leaderboard;
 //   else teamStatus.totalDraws += 1;
 // }
 // });
+
+// { name: matche.awayTeamName,
+//   totalWins: 0,
+//   totalLosses: 0,
+//   goalsFavor: 0,
+//   goalsOwn: 0,
+//   totalDraws: 0,
+//   totalGames: teamMatches.length };
+
+// name: string,
+//     totalWins: number,
+//     totalDraws: number,
+//     totalLosses: number,
+//     goalsFavor: number,
+//     goalsOwn: number,
+//     totalGames: number,
