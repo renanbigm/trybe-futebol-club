@@ -34,11 +34,8 @@ class Leaderboard {
   }
 
   static pathHandler(matche: any, resume: any, path: string) {
-    if (path.includes('away')) {
-      return Leaderboard.buildAway(resume, matche);
-    }
-    if (path.includes('home')) {
-      return Leaderboard.buildHome(resume, matche);
+    if (path) {
+      return Leaderboard.getTeamsInfo(resume, matche, path);
     }
     const teamMatches = resume.filter((el: any) => matche.homeTeamName === el.homeTeamName
       || matche.homeTeamName === el.awayTeamName);
@@ -65,18 +62,23 @@ class Leaderboard {
     return teamData;
   }
 
-  static buildHome(resume: any, matche: any) {
-    const teamMatches = resume.filter((el: any) => matche.homeTeamName === el.homeTeamName);
+  static getTeamsInfo(resume: any, matche: any, path: any) {
+    const pathe = path.slice(1);
+    const enemy = pathe === 'home' ? 'away' : 'home';
+
+    const teamMatches = resume.filter((el: any) =>
+      matche[`${pathe}TeamName`] === el[`${pathe}TeamName`]);
+
     const teamStatus = Leaderboard.handleStatus(teamMatches.length);
-
     teamMatches.forEach((el: any) => {
-      teamStatus.name = matche.homeTeamName;
+      teamStatus.name = matche[`${pathe}TeamName`];
 
-      if (matche.homeTeamName === el.homeTeamName) {
-        teamStatus.goalsFavor += el.homeTeamGoals;
-        teamStatus.goalsOwn += el.awayTeamGoals;
-        if (el.result === 'homeWins') teamStatus.totalWins += 1;
-        else if (el.result === 'awayWins') teamStatus.totalLosses += 1;
+      if (matche[`${pathe}TeamName`] === el[`${pathe}TeamName`]) {
+        teamStatus.goalsFavor += el[`${pathe}TeamGoals`];
+        teamStatus.goalsOwn += el[`${enemy}TeamGoals`];
+
+        if (el.result === `${pathe}Wins`) teamStatus.totalWins += 1;
+        else if (el.result === `${enemy}Wins`) teamStatus.totalLosses += 1;
         else teamStatus.totalDraws += 1;
       }
     });
@@ -104,23 +106,23 @@ class Leaderboard {
     return resume;
   }
 
-  static buildAway(resume: any, matche: any) {
-    const teamMatches = resume.filter((el: any) => matche.awayTeamName === el.awayTeamName);
-    const teamStatus = Leaderboard.handleStatus(teamMatches.length);
+  // static buildAway(resume: any, matche: any) {
+  //   const teamMatches = resume.filter((el: any) => matche.awayTeamName === el.awayTeamName);
+  //   const teamStatus = Leaderboard.handleStatus(teamMatches.length);
 
-    teamMatches.forEach((el: any) => {
-      teamStatus.name = matche.awayTeamName;
+  //   teamMatches.forEach((el: any) => {
+  //     teamStatus.name = matche.awayTeamName;
 
-      if (matche.awayTeamName === el.awayTeamName) {
-        teamStatus.goalsFavor += el.awayTeamGoals;
-        teamStatus.goalsOwn += el.homeTeamGoals;
-        if (el.result === 'awayWins') teamStatus.totalWins += 1;
-        else if (el.result === 'homeWins') teamStatus.totalLosses += 1;
-        else teamStatus.totalDraws += 1;
-      }
-    });
-    return teamStatus;
-  }
+  //     if (matche.awayTeamName === el.awayTeamName) {
+  //       teamStatus.goalsFavor += el.awayTeamGoals;
+  //       teamStatus.goalsOwn += el.homeTeamGoals;
+  //       if (el.result === 'awayWins') teamStatus.totalWins += 1;
+  //       else if (el.result === 'homeWins') teamStatus.totalLosses += 1;
+  //       else teamStatus.totalDraws += 1;
+  //     }
+  //   });
+  //   return teamStatus;
+  // }
 
   static buildAll(matche: any, teamMatche: any) {
     const teamStatus = Leaderboard.handleStatus(teamMatche.length);
